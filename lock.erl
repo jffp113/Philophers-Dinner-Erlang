@@ -1,5 +1,5 @@
 %%%-------------------------------------------------------------------
-%%% @author jorgepereira
+%%% @author jorgepereira, joanaparreira
 %%% @copyright (C) 2020, <COMPANY>
 %%% @doc
 %%%
@@ -9,7 +9,7 @@
 -module(lock).
 -author("jorgepereira").
 -define(NUM_PHILOSOPHERS,5).
--define(SLACK,5).
+
 %% API
 -export([start/0,init/1,handle_call/3,can_eat_msg/1,release_msg/1]).
 
