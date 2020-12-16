@@ -2,7 +2,12 @@
 %%% @author jorgepereira, joanaparreira
 %%% @copyright (C) 2020, <COMPANY>
 %%% @doc
-%%%
+%%% This file contains the implementation of a philosopher
+%%% Philosophers have two states. They can be eating or sleeping
+%%% for a random time.
+%%% Philosophers before changing from a thinking state to
+%%% a eating state they must contact a smart lock that knows
+%%% if a philosopher can eating.
 %%% @end
 %%% Created : 16. dez 2020 12:24
 %%%-------------------------------------------------------------------
@@ -15,6 +20,9 @@
 -define(MAX_EAT, 3000).
 -define(MAX_THINK, 1000).
 
+%start/0 is responsible to initiate the smart lock
+%server and to initiate the philosophers with a
+%superviser
 start() ->
   lock:start(),
   process_flag(trap_exit, true),
@@ -28,6 +36,9 @@ start() ->
 %  exit(Pid,badarg),
 %  io:format("parou ~p~n", [Id]).
 
+%spawn_philosophers is responsible for spawning
+% the philosophers and returning a list mapping the
+% id of a philosopher to the corresponding Pid[{Pid,Id}|T]
 spawn_philosophers(0,List) -> List;
 spawn_philosophers(Num,List) ->
   LocalId = Num - 1,

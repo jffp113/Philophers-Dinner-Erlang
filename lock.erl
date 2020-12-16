@@ -91,15 +91,16 @@ calculate_left_pos(Pos) ->
 %philosopher
 calculate_right_pos(Pos) -> (Pos + 1) rem ?NUM_PHILOSOPHERS.
 
-% current_round/1 returns the Id of the right
+% current_round/1 computes the current round
 current_round(GRound) -> GRound/?NUM_PHILOSOPHERS.
 
+% check_release/1 releases the lock os a philosopher
+% returning the new state.
+% {_,true,_} -> {_,false,_}
 check_release(Pos,{EatList,GRound}) ->
   {_,_,Round} = lists:keyfind(Pos, 1, EatList),
   NewList = lists:keyreplace(Pos, 1, EatList, {Pos,false,Round}),
   {ok,{NewList,GRound}}.
-
-
 
 
 
