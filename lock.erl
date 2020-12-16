@@ -13,7 +13,6 @@
 %%% Created : 16. dez 2020 11:13
 %%%-------------------------------------------------------------------
 -module(lock).
--author("jorgepereira").
 -define(NUM_PHILOSOPHERS,5).
 
 %% API

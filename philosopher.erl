@@ -12,7 +12,6 @@
 %%% Created : 16. dez 2020 12:24
 %%%-------------------------------------------------------------------
 -module(philosopher).
--author("jorgepereira").
 
 %% API
 -export([start/0, run_philosopher/1, supervise/1]).
@@ -45,21 +44,33 @@ spawn_philosophers(Num,List) ->
   Pid = spawn_link(?MODULE, run_philosopher, [LocalId]),
   spawn_philosophers(Num-1,[{Pid,LocalId} | List]).
 
+%simulate_thinking\0 simulates the thinking process
+% a philosopher is going to think for Time ms
 simulate_thinking() ->
   Time = rand:uniform(?MAX_THINK),
   timer:sleep(Time).
 
+%simulate_eating\1 simulates the eating process
+% a philosopher is going to eat for Time ms
 simulate_eating(Id) ->
   io:format("Started eating ~p~n",[Id]),
   Time = rand:uniform(?MAX_EAT),
   timer:sleep(Time),
   io:format("Stop Eating ~p~n",[Id]).
 
+%run_philosopher\1 is responsible for changing
+% the philosopher state from eating -> thinking
+% and from thinking -> eating
 run_philosopher(Id) ->
   simulate_thinking(),
   try_until_can_eat(Id),
   run_philosopher(Id).
 
+%try_until_can_eat\1 is responsible for
+% actively trying to put a philosopher in
+% the eating state.
+% For this to happen, try_until_can_eat/1 will
+% contact a server
 try_until_can_eat(Id) ->
   Result = lock:can_eat_msg(Id),
   case Result of
@@ -84,8 +95,12 @@ supervise(PidList) ->
       supervise(NewList)
   end.
 
+% cleanup/1 ask the server for releasing
+% the eating state of a philosopher
 cleanup(Id) -> lock:release_msg(Id).
 
+%respawn_philosopher\0 spawns a new philosopher
+%linking to the current process for the monitor
 respawn_philosopher(Pid,PidList, ID) ->
   NewPID = spawn_link(?MODULE, run_philosopher, [ID]),
   NewList = lists:keyreplace(Pid, 1, PidList, {NewPID,ID}),
