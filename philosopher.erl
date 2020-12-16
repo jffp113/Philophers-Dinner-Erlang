@@ -57,12 +57,16 @@ simulate_eating(Id) ->
 
 run_philosopher(Id) ->
   simulate_thinking(),
+  try_until_can_eat(Id),
+  run_philosopher(Id).
+
+try_until_can_eat(Id) ->
   Result = lock:can_eat_msg(Id),
   case Result of
-    ok -> simulate_eating(Id),
-          lock:release_msg(Id),
-          run_philosopher(Id);
-    error -> run_philosopher(Id)
+    ok ->
+      simulate_eating(Id),
+      lock:release_msg(Id);
+    error -> try_until_can_eat(Id)
   end.
 
 % supervise/1 watches over the process that runs
